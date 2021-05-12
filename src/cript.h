@@ -4,25 +4,28 @@
 #include <errno.h>
 #include "codec.h"
 
+#define MAX_PATH_LENGHT 1024
 typedef enum operation {
     DISTRIBUTE,
     RECOVER
 }operation;
-typedef struct files{
-    char * input;
-    char * output;
+typedef struct args_info{
+    char input[MAX_PATH_LENGHT];
+    char output[MAX_PATH_LENGHT];
     int k;
     operation operation;
     bool verbose;
-}files;
+}args_info;
 typedef struct functions{
     int (*handle_input)      ();
     int (*handle_crypt)      ();
     int (*handle_output)      ();
 }functions;
 typedef struct crypt{
-    files files;
+    args_info args;
     functions functions;
+    BMPHeader secret;
+    BMPHeader shadows[6];
 }crypt;
 #define ARGS_COUNT 5
 

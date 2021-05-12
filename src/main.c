@@ -32,8 +32,5 @@ int main (int argc, char **argv) {
         return EXIT_FAILURE;
     }
     
-    free(crypt_info.files.input);
-    free(crypt_info.files.output);
-
     return EXIT_SUCCESS;
 }

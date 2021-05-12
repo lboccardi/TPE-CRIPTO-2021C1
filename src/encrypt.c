@@ -1,10 +1,9 @@
 #include "cript.h"
 #include <stdio.h>
 
-BMPHeader header;
 int input_distribute(){
         FILE *fp;          /* Open file pointer */
-        if ((fp = fopen(crypt_info.files.input, "rb")) == NULL){
+        if ((fp = fopen(crypt_info.args.input, "rb")) == NULL){
             fprintf(stderr,"error al abrir\n");
             return EXIT_FAILURE;
         }
@@ -16,11 +15,11 @@ int input_distribute(){
             return EXIT_FAILURE;
         }
         
-        if(parse(&header,data) == ERROR){
+        if(parse(&crypt_info.secret,data) == ERROR){
             exit(EXIT_FAILURE);
         }
-        if(crypt_info.files.verbose){
-            printHeaderInfo(&header);
+        if(crypt_info.args.verbose){
+            printHeaderInfo(&crypt_info.secret);
         } 
     return EXIT_SUCCESS;
 }
