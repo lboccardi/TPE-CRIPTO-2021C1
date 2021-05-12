@@ -1,7 +1,7 @@
 #include "codec.h"
-#include <stdlib.h>
-#include <errno.h>
+#include "args.h"
 
+struct files files_info;
 
 void printHeaderInfo(BMPHeader * header){
     printf("Type:\t%x\tSize:\t%d\n",header->type, header->size);
@@ -14,11 +14,19 @@ void printHeaderInfo(BMPHeader * header){
     printf("Colors:\t%d\tImp C:\t%d\n",header->num_colors,header->important_colors);
 
 }
-int main () {
+int main (int argc, char **argv) {
+    
+    if(argc < ARGS_COUNT){
+         printf("Cantidad incorrecta de parámetros\n");
+         return EXIT_FAILURE;
+    }
+    if(EXIT_FAILURE == check_arguments(argc,argv)){
+        return EXIT_FAILURE;
+    }
     FILE *fp;          /* Open file pointer */
      if ((fp = fopen("test-images/lena.bmp", "rb")) == NULL){
          printf("error al abrir\n");
-         return 0;
+         return EXIT_FAILURE;
      }
     uint8_t data[HEADER_SIZE];
     if (fread(&data, HEADER_SIZE, 1, fp) < 1)
@@ -26,12 +34,12 @@ int main () {
         /* Couldn't read the file header - return NULL... */
 	    fclose(fp);
         printf("error al leer\n");
-        return 0;
+        return EXIT_FAILURE;
         }
     BMPHeader header;
     if(parse(&header,data) == ERROR){
         exit(EXIT_FAILURE);
     } 
     printHeaderInfo(&header);
-    return 0;
+    return EXIT_SUCCESS;
 }
