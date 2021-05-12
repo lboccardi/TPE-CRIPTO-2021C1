@@ -1,7 +1,6 @@
-#include "codec.h"
-#include "args.h"
+#include "cript.h"
 
-struct files files_info;
+struct crypt crypt_info ;
 
 void printHeaderInfo(BMPHeader * header){
     printf("Type:\t%x\tSize:\t%d\n",header->type, header->size);
@@ -17,29 +16,24 @@ void printHeaderInfo(BMPHeader * header){
 int main (int argc, char **argv) {
     
     if(argc < ARGS_COUNT){
-         printf("Cantidad incorrecta de parámetros\n");
+         fprintf(stderr,"Cantidad incorrecta de parámetros\n");
          return EXIT_FAILURE;
     }
     if(EXIT_FAILURE == check_arguments(argc,argv)){
         return EXIT_FAILURE;
     }
-    FILE *fp;          /* Open file pointer */
-     if ((fp = fopen("test-images/lena.bmp", "rb")) == NULL){
-         printf("error al abrir\n");
-         return EXIT_FAILURE;
-     }
-    uint8_t data[HEADER_SIZE];
-    if (fread(&data, HEADER_SIZE, 1, fp) < 1)
-        {
-        /* Couldn't read the file header - return NULL... */
-	    fclose(fp);
-        printf("error al leer\n");
+    if(EXIT_FAILURE == crypt_info.functions.handle_input()){
         return EXIT_FAILURE;
-        }
-    BMPHeader header;
-    if(parse(&header,data) == ERROR){
-        exit(EXIT_FAILURE);
-    } 
-    printHeaderInfo(&header);
+    }
+    if(EXIT_FAILURE == crypt_info.functions.handle_crypt()){
+        return EXIT_FAILURE;
+    }
+    if(EXIT_FAILURE == crypt_info.functions.handle_output()){
+        return EXIT_FAILURE;
+    }
+    
+    free(crypt_info.files.input);
+    free(crypt_info.files.output);
+
     return EXIT_SUCCESS;
 }

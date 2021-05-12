@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
+
 
 #define HEADER_SIZE 54
 #define TYPE 0x4d42

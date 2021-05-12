@@ -88,10 +88,6 @@ request_states parse(struct BMPHeader * result,uint8_t *data){
         case image_size_bytes:
             memcpy(&result->image_size_bytes,d_index,4);
             d_index+=4;
-             if(result->image_size_bytes <= 0 || result->image_size_bytes > result->size){
-                actual_state = error;
-                break;
-            }
             actual_state = x_resolution_ppm;
             break;
         case x_resolution_ppm:
