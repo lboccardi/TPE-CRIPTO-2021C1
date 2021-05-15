@@ -21,13 +21,13 @@ unsigned int multiplication(unsigned a, unsigned int b){
     
     int i = 0;
     int array[8];
-    for (i = 0; i < 8; ++i){
+    for (i = 0; i < PIXEL_SIZE; ++i){
         array[i] = (a >> i) & 1;
     }
     
     unsigned int result = 0;
 
-    for (i = 0; i < 8; i++){
+    for (i = 0; i < PIXEL_SIZE; i++){
         if(array[i] == 1){
             result = result ^ (b << i);
         }
@@ -68,3 +68,31 @@ unsigned int redux(unsigned int p, unsigned int m){
 
      return resto;
 }
+
+unsigned int gf_pow(unsigned int pixel, int times){
+    if(times == 0){
+        return 1;
+    }
+    int i; 
+    unsigned int result = pixel;
+
+    for(i = 0; i < times - 1; i++){
+        result = prod(result, pixel);
+    }
+
+    return result;
+}
+
+unsigned int f_block(unsigned int * block, unsigned int pixel, int k){
+    int i;
+    unsigned int result = 0;
+
+    for(i = 0; i < k; i++){
+        unsigned int s = block[i];
+        unsigned int aux = prod(s, gf_pow(pixel, i));
+        result = sum(result, aux);
+    }
+
+    return result;
+}
+
