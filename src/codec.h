@@ -10,7 +10,7 @@
 #define TYPE 0x4d42
 #define BITS_PER_PX 8
 
-typedef struct BMPHeader {             // Total: 54 bytes
+typedef struct bmp_header {             // Total: 54 bytes
   uint16_t  type;             // Magic identifier: 0x4d42
   uint32_t  size;             // File size in bytes
   uint16_t  reserved1;        // Not used
@@ -27,7 +27,7 @@ typedef struct BMPHeader {             // Total: 54 bytes
   int32_t   y_resolution_ppm; // Pixels per meter
   uint32_t  num_colors;       // Number of colors  
   uint32_t  important_colors; // Important colors 
-} BMPHeader;
+} bmp_header;
 
 /** Estado en el que se regresa de la transacción */
 typedef enum request_states{
@@ -57,5 +57,5 @@ typedef enum states{
 }states;
 
 /** parsear **/
-request_states parse(struct BMPHeader * result,uint8_t *data);
+request_states parse(struct bmp_header * result,uint8_t *data);
 #endif
