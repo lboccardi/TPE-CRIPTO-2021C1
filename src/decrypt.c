@@ -51,12 +51,12 @@ int input_recover(){
             fprintf(stderr,"error al leer el archivo %s\n",in_file->d_name);
             return EXIT_FAILURE;
         }
-        if(parse(&crypt_info.shadows[file_count++],data) == ERROR){
+        if(parse(&crypt_info.shadows[file_count++].header,data) == ERROR){
             exit(EXIT_FAILURE);
         }
         if(crypt_info.args.verbose){
             printf("\nArchivo leído: %s\n",in_file->d_name);
-            printHeaderInfo(&crypt_info.shadows[file_count-1]);
+            printHeaderInfo(&crypt_info.shadows[file_count-1].header);
         }
         fclose(entry_file);
     }

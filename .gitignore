@@ -1,5 +1,7 @@
 # Compiled Files
 main
+test/
+
 
 # Prerequisites
 *.d
@@ -44,6 +46,9 @@ main
 *.su
 *.idb
 *.pdb
+
+#VSCode
+.vscode/*
 
 # Kernel Module Compile Results
 *.mod*
