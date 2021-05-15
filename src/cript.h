@@ -33,6 +33,9 @@ extern struct crypt crypt_info ;
 
 int check_arguments(int argc, char **argv);
 
+int find_images_in_directory (char * path);
+int read_image(char * path, int image_index);
+
 int input_distribute();
 int encryption_distribute();
 int output_distribute();

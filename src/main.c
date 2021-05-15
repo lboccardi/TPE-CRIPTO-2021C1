@@ -11,7 +11,7 @@ void printHeaderInfo(BMPHeader * header){
     printf("Comp:\t%x\tImg B:\t%d\n",header->compression, header->image_size_bytes);
     printf("Res X:\t%d\tRes Y:\t%d\n",header->x_resolution_ppm,header->y_resolution_ppm);
     printf("Colors:\t%d\tImp C:\t%d\n",header->num_colors,header->important_colors);
-
+    printf("\n\n");
 }
 int main (int argc, char **argv) {
     
