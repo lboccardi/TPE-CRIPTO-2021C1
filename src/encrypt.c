@@ -43,7 +43,6 @@ int find_images_in_directory (char * path){
                 printf("Analyzing if file \"%s\" is suitable for being a shadow\n", dirp->d_name);
             }
             if (read_image(dirp->d_name, read_images) == EXIT_SUCCESS) {
-                strcpy(crypt_info.shadows[read_images].filename, dirp->d_name);
                 read_images++;
             };
         }
@@ -60,67 +59,25 @@ int find_images_in_directory (char * path){
     return EXIT_SUCCESS;
 }
 
-int read_image(char * path, int image_index) {
-
-    FILE * fp;
-    int height, width, offset;
-    
-    if ((fp = fopen(path, "rb")) == NULL){
-        fprintf(stderr,"Error al abrir %s\n", path);
-        return EXIT_FAILURE;
-    }
-    
-    uint8_t header_data[HEADER_SIZE];
-
-    if (fread(&header_data, HEADER_SIZE, 1, fp) < 1){
-        fclose(fp);
-        fprintf(stderr,"error al leer\n");
-        return EXIT_FAILURE;
-    }
-
-    bmp_image * image = (image_index < 0) ? &crypt_info.secret : &crypt_info.shadows[image_index];
-
-    if(parse(&image->header,header_data) == ERROR){
-        return EXIT_FAILURE;
-    }
-
-    if(crypt_info.args.verbose) {
-        printHeaderInfo(&image->header);
-    }
-
-    height = image->header.height_px;
-    width = image->header.width_px;
-    offset = image->header.offset;
-
-    image->header_data = malloc(HEADER_SIZE + offset);
-    image->image_data = malloc(height * width * sizeof(uint8_t));
-
-    return EXIT_SUCCESS;
-}
-
 int encryption_distribute(){
     printf("estoy en encrypt distribute\n");
     return EXIT_SUCCESS;
 }
+
 int output_distribute(){
-        // FILE * fp;
 
-        // if ((fp = fopen(output_path, "wb")) == NULL){
-        //     fprintf(stderr,"Error al escribir archivo %s\n", output_path);
-        //     return EXIT_FAILURE;
-        // }
+    bmp_image * image;
+    int length = strlen(crypt_info.args.output) + MAX_PATH_LENGHT + 2;
+    char new_file_name[length];
 
-    if (crypt_info.secret.header_data != NULL ) {
-        free(crypt_info.secret.header_data);
-        free(crypt_info.secret.image_data);
-    }
 
     for (int i = 0; i < crypt_info.args.k; i++) {
-        if (crypt_info.shadows[i].header_data != NULL) {
-            free(crypt_info.shadows[i].header_data);
-            free(crypt_info.shadows[i].image_data);
-        }
+        image = &crypt_info.shadows[i];
+        sprintf(new_file_name, "%s/%s", crypt_info.args.output, image->filename);
+        write_image(new_file_name, image);
     }
+
+    free_all_images();
 
     printf("estoy en output distribute\n");
     return EXIT_SUCCESS;

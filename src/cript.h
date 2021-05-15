@@ -44,6 +44,10 @@ int check_arguments(int argc, char **argv);
 
 int find_images_in_directory (char * path);
 int read_image(char * path, int image_index);
+int write_image(char * file_path, bmp_image * image);
+
+void free_image(int image_index);
+void free_all_images();
 
 int input_distribute();
 int encryption_distribute();
