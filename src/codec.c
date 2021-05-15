@@ -2,7 +2,7 @@
 #include <string.h>
 
 
-request_states parse(struct BMPHeader * result,uint8_t *data){
+request_states parse(struct bmp_header * result,uint8_t *data){
     states actual_state = type;
     uint8_t * d_index = data;
     while(actual_state != finished && actual_state != error){

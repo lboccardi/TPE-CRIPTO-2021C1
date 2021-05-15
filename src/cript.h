@@ -21,12 +21,21 @@ typedef struct functions{
     int (*handle_crypt)      ();
     int (*handle_output)      ();
 }functions;
+
+typedef struct bmp_image {
+    bmp_header header;
+    uint8_t * header_data;
+    uint8_t ** image_data;
+    char filename[MAX_PATH_LENGHT];
+} bmp_image;
+
 typedef struct crypt{
     args_info args;
     functions functions;
-    BMPHeader secret;
-    BMPHeader shadows[6];
-}crypt;
+    bmp_image secret;
+    bmp_image shadows[6];
+} crypt;
+
 #define ARGS_COUNT 5
 
 extern struct crypt crypt_info ;
@@ -44,5 +53,5 @@ int input_recover();
 int decryption_recover();
 int output_recover();
 
-void printHeaderInfo(BMPHeader * header);
+void printHeaderInfo(bmp_header * header);
 #endif

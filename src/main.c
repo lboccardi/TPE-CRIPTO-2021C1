@@ -2,7 +2,7 @@
 
 struct crypt crypt_info ;
 
-void printHeaderInfo(BMPHeader * header){
+void printHeaderInfo(bmp_header * header){
     printf("Type:\t%x\tSize:\t%d\n",header->type, header->size);
     printf("Res1:\t%x\tRes2:\t%x\n",header->reserved1,header->reserved2);
     printf("Offset:\t%d\tDIB:\t%x\n",header->offset, header->dib_header_size);
