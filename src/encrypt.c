@@ -64,16 +64,25 @@ int encryption_distribute(){
     int height = crypt_info.secret.header.height_px;
     int width = crypt_info.secret.header.width_px;
     int k = crypt_info.args.k;
-
+    
     int bcount = (height*width)/k;
         for(int i=0; i<bcount;i++){
             uint8_t * secret = crypt_info.secret.image_data+k*i;
+            uint8_t xs[k];
          for(int j=0;j<k;j++){
              uint8_t aux[4];
              get_block_by_index(&crypt_info.shadows[j],i,aux);
              uint8_t block[k];
              memcpy(block,secret,k*sizeof(uint8_t));
 
+             for(int r=0;r<j;r++){
+                 if(aux[0]==xs[r]){
+                     aux[0]=(aux[0]+1)%255;
+                     r=0;
+                 }
+             }   
+             xs[j]=aux[0];
+             
              uint8_t f_x = f_block(block,aux[0],k);
              uint8_t replacement;
 
