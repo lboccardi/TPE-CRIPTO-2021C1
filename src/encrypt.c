@@ -7,7 +7,7 @@
 
 int input_distribute(){
 
-    if (read_image(crypt_info.args.input, -1) == EXIT_FAILURE) {
+    if (read_image_secret(crypt_info.args.input) == EXIT_FAILURE) {
         return EXIT_FAILURE;
     }
 
@@ -55,12 +55,46 @@ int find_images_in_directory (char * path){
         fprintf(stderr, "There are not enough shadow images in the given directory\n");
         return EXIT_FAILURE;
     }
-
+    
     return EXIT_SUCCESS;
 }
 
 int encryption_distribute(){
     printf("estoy en encrypt distribute\n");
+    int height = crypt_info.secret.header.height_px;
+    int width = crypt_info.secret.header.width_px;
+    int k = crypt_info.args.k;
+
+    int bcount = (height*width)/k;
+        for(int i=0; i<bcount;i++){
+            uint8_t * secret = crypt_info.secret.image_data+k*i;
+         for(int j=0;j<k;j++){
+             uint8_t aux[4];
+             get_block_by_index(&crypt_info.shadows[j],i,aux);
+             uint8_t block[k];
+             memcpy(block,secret,k*sizeof(uint8_t));
+
+             uint8_t f_x = f_block(block,aux[0],k);
+             uint8_t replacement;
+
+             aux[1]&=0xF8;
+             replacement = f_x & 0xE0;
+             replacement >>= 5;
+             aux[1]|=replacement;
+
+             aux[2]&=0xF8;
+             replacement = f_x & 0x1C;
+             replacement >>= 2;
+             aux[2]|=replacement;
+
+             aux[3]&=0xF8;
+             replacement = f_x & 0x03;
+             uint8_t parity= calcParityBit(f_x) <<2;
+             replacement|=parity;
+             aux[3]|=replacement;
+             write_block_by_index(&crypt_info.shadows[j],i,aux);
+         }   
+        }    
     return EXIT_SUCCESS;
 }
 

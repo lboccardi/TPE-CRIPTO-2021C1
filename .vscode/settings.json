@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "cript.h": "c"
+        "cript.h": "c",
+        "codec.h": "c"
     }
 }
