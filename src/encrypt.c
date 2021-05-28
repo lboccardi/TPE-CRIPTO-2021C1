@@ -60,7 +60,6 @@ int find_images_in_directory (char * path){
 }
 
 int encryption_distribute(){
-    printf("estoy en encrypt distribute\n");
     int height = crypt_info.secret.header.height_px;
     int width = crypt_info.secret.header.width_px;
     int k = crypt_info.args.k;
@@ -122,6 +121,5 @@ int output_distribute(){
 
     free_all_images();
 
-    printf("estoy en output distribute\n");
     return EXIT_SUCCESS;
 }
