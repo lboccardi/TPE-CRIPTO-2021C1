@@ -295,45 +295,58 @@ void generate_galois_inverse_table (uint8_t * array, int n) {
 
 }
 
+uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound, uint8_t * inv) {
+    uint8_t to_return = 1;
+
+    for (int q = 0; q < upper_bound; q++) {
+        if (q != i) {
+            to_return = prod(to_return, prod(x[q],inv[sum(x[i], x[q])]));
+        }
+    }
+
+    return to_return;
+}
+
+uint8_t calculate_y_prime (uint8_t * x, uint8_t * y, uint8_t secret, int i, uint8_t * inv) {
+    return prod(sum(y[i],secret), inv[x[i]]);
+}
+
 void interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k, uint8_t * inv) {
-    uint8_t actual_secret = 0, productoria, resta, div, mult, y_prima;
-    int i, j, r;
+    uint8_t actual_secret = 0, productoria, mult, aux_x, aux_y;
+    uint8_t y_p[k];
+    int i, r;
+
+    for (i = 0; i < k - 1; i++) {
+        if (x[i] == 0) {
+            aux_x = x[k-1];
+            aux_y = y[k-1];
+
+            x[k-1] = x[i];
+            y[k-1] = y[i];
+
+            x[i] = aux_x;
+            y[i] = aux_y; 
+        }
+    }
     
     for(i = 0; i < k; i++){
-        productoria = 1;
-
-        for(j = 0; j < k; j++){
-            if(j != i){
-                resta = sum(x[i],x[j]);
-                div = prod(x[j],inv[resta]);
-                productoria = prod(productoria,div);
-            }
-        }    
-
+        productoria = sequential_interpolation_product(x, i, k, inv); 
         mult = prod(y[i],productoria);
         actual_secret = sum(actual_secret,mult);
+        y_p[i] = y[i];
     }
 
     s[0] = actual_secret;
-    
+    int new_upper_bound;
+
     for(r = 1; r<k; r++) {
+        new_upper_bound =  k - r;
         actual_secret = 0;
 
-        for(i = 0; i <= k-r; i++){
-            productoria = 1;
-
-            for(j = 0; j <= k-r; j++){
-                if(j != i){
-                    resta = sum(x[i],x[j]);
-                    div = prod(x[j],inv[resta]);
-                    productoria = prod(productoria,div);
-                }
-            }  
-              
-            y_prima = sum(y[i],s[0]);
-            y_prima = prod(y_prima,inv[x[i]]);
-            
-            mult = prod(y_prima,productoria);
+        for(i = 0; i < new_upper_bound; i++){
+            y_p[i] = calculate_y_prime(x, y_p, s[r-1], i, inv);
+            productoria = sequential_interpolation_product(x, i, new_upper_bound, inv);
+            mult = prod(y_p[i],productoria);
             actual_secret = sum(actual_secret,mult);
         }
         
