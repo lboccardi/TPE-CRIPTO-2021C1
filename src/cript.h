@@ -4,6 +4,11 @@
 #include <errno.h>
 #include "codec.h"
 #include "galois.h"
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/dir.h>
+#include <unistd.h>
 
 #define MAX_PATH_LENGHT 1024
 typedef enum operation {
@@ -54,6 +59,10 @@ int find_images_in_directory (char * path);
 int read_image(char * path, int image_index);
 int read_image_secret(char * path);
 int write_image(char * file_path, bmp_image * image);
+int write_secret_image(char * file_path, secret_image * image);
+
+void generate_galois_inverse_table (uint8_t * array, int n);
+void interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k, uint8_t * inv);
 
 void free_secret_image();
 void free_image(int image_index);

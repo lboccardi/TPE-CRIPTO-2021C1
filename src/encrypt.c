@@ -1,9 +1,7 @@
 #include "cript.h"
 #include <stdio.h>
 #include <string.h>
-#include <sys/stat.h>
-#include <sys/dir.h>
-#include <unistd.h>
+
 
 int input_distribute(){
 
@@ -18,46 +16,6 @@ int input_distribute(){
     return EXIT_SUCCESS;
 }
 
-int find_images_in_directory (char * path){
-    DIR * dir;
-    struct dirent * dirp;
-    int read_images = 0;
-
-    if ((dir = opendir(path)) == NULL) {
-        fprintf(stderr, "Error reading directory %s\n", path);
-        return EXIT_FAILURE;
-    }
-
-    char cwd[MAX_PATH_LENGHT];
-
-    if (getcwd(cwd, sizeof(cwd)) == NULL) {
-        fprintf(stderr, "Error accessing current working directory %s\n", path);
-        return EXIT_FAILURE;
-    }
-
-    chdir(path);
-
-    while((dirp = readdir(dir))!=NULL && read_images < crypt_info.args.k) {
-        if(dirp->d_type == 8) {
-            if(crypt_info.args.verbose) {
-                printf("Analyzing if file \"%s\" is suitable for being a shadow\n", dirp->d_name);
-            }
-            if (read_image(dirp->d_name, read_images) == EXIT_SUCCESS) {
-                read_images++;
-            };
-        }
-    }
-
-    chdir(cwd);
-    closedir(dir);
-
-    if (read_images < crypt_info.args.k) {
-        fprintf(stderr, "There are not enough shadow images in the given directory\n");
-        return EXIT_FAILURE;
-    }
-    
-    return EXIT_SUCCESS;
-}
 
 int encryption_distribute(){
     int height = crypt_info.secret.header.height_px;
