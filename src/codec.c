@@ -1,5 +1,4 @@
 #include "codec.h"
-#include <string.h>
 
 
 request_states parse(struct bmp_header * result,uint8_t *data){
@@ -13,7 +12,7 @@ request_states parse(struct bmp_header * result,uint8_t *data){
             d_index+=2;
             if(result->type != TYPE){
                 actual_state = error;
-                fprintf(stderr, "Incorrect Type. Not BM.\n");
+                fprintf(stderr, "Tipo de archivo incorrecto, no es un BMP.\n");
                 break;
             }
             actual_state =size;
@@ -23,7 +22,7 @@ request_states parse(struct bmp_header * result,uint8_t *data){
             d_index+=4;
             if(result->size <= 0){
                 actual_state = error;
-                fprintf(stderr, "Size shouldn't be 0.\n");
+                fprintf(stderr, "El tamaño de la imagen debe ser mayor a 0.\n");
                 break;
             }
             actual_state =reserved;
@@ -49,7 +48,7 @@ request_states parse(struct bmp_header * result,uint8_t *data){
             memcpy(&result->width_px,d_index,4);
             d_index+=4;
             if(result->width_px <= 0){
-                fprintf(stderr, "Width shouldn't be 0.\n");
+                fprintf(stderr, "El ancho de la imagen no debe ser 0.\n");
                 actual_state = error;
                 break;
             }
@@ -59,7 +58,7 @@ request_states parse(struct bmp_header * result,uint8_t *data){
             memcpy(&result->height_px,d_index,4);
             d_index+=4;
             if(result->height_px <= 0){
-                fprintf(stderr, "Height shouldn't be 0.\n");
+                fprintf(stderr, "La altura de la imagen no debe ser 0.\n");
                 actual_state = error;
                 break;
             }
@@ -74,7 +73,7 @@ request_states parse(struct bmp_header * result,uint8_t *data){
             memcpy(&result->bits_per_pixel,d_index,2);
             d_index+=2;
             if(result->bits_per_pixel != BITS_PER_PX){
-                fprintf(stderr, "Bits per px should be 8.\n");
+                fprintf(stderr, "La cantidad de bits por pixel debe ser 8.\n");
                 actual_state = error;
                 break;
             }

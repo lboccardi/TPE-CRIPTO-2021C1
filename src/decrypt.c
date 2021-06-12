@@ -1,6 +1,4 @@
 #include "cript.h"
-#include <stdio.h>
-#include <string.h>
 
 int input_recover() {
 
@@ -47,7 +45,7 @@ int decryption_recover() {
             f_x[j] = t;
         }
         uint8_t secret[k];
-        interpolation(x,f_x,secret,k,inv_prod);
+        galois_lagrange_interpolation(x,f_x,secret,k,inv_prod);
         memcpy(crypt_info.secret.image_data+i*k,secret,k*sizeof(uint8_t));
     }
 
@@ -56,7 +54,6 @@ int decryption_recover() {
 
 
 int output_recover() {
-    printf("estoy en output recover\n");
     int return_value = write_secret_image(crypt_info.secret.filename, &crypt_info.secret);
     free_all_images();
     return return_value;

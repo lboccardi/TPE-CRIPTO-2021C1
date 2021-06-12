@@ -1,6 +1,4 @@
 #include "cript.h"
-#include <string.h>
-#include <stdio.h>
 
 #define VERBOSE "--verbose"
 

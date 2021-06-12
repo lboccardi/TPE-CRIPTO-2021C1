@@ -55,7 +55,7 @@ int encryption_distribute(){
 
              aux[3]&=0xF8;
              replacement = f_x & 0x03;
-             uint8_t parity= calcParityBit(f_x) <<2;
+             uint8_t parity= calc_parity_bit(f_x) <<2;
              replacement|=parity;
              aux[3]|=replacement;
              write_block_by_index(&crypt_info.shadows[j],i,aux);

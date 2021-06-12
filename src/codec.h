@@ -4,12 +4,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-
+#include <string.h>
 
 #define HEADER_SIZE 54
 #define TYPE 0x4d42
 #define BITS_PER_PX 8
 
+/* Struct for bmp_header and access info  */
 typedef struct bmp_header {             // Total: 54 bytes
   uint16_t  type;             // Magic identifier: 0x4d42
   uint32_t  size;             // File size in bytes
@@ -29,13 +30,13 @@ typedef struct bmp_header {             // Total: 54 bytes
   uint32_t  important_colors; // Important colors 
 } bmp_header;
 
-/** Estado en el que se regresa de la transacción */
+/** Transaction states */
 typedef enum request_states{
     FINISHED,
     ERROR
 }request_states;
 
-/** Estados del parser */
+/** Parser states */
 typedef enum states{
  type,
  size,
@@ -56,6 +57,5 @@ typedef enum states{
  error   
 }states;
 
-/** parsear **/
 request_states parse(struct bmp_header * result,uint8_t *data);
 #endif

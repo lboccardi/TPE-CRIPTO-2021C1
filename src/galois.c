@@ -2,6 +2,8 @@
 
 uint16_t multiplication(uint8_t a, uint8_t b);
 uint8_t redux(uint16_t a, uint16_t b);
+void swap_with_last(uint8_t * x, uint8_t * y, int i, int n);
+uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound, uint8_t * inv);
 
 uint8_t sum(uint8_t a, uint8_t b){
     return a ^ b;
@@ -9,16 +11,11 @@ uint8_t sum(uint8_t a, uint8_t b){
 
 
 uint8_t prod(uint8_t a, uint8_t b){
-
     uint16_t result = multiplication(a,b);
-
     return redux(result, POL_PRIMITIVE);
-
-
 }
 
 uint16_t multiplication(uint8_t a, uint8_t b){
-    
     int i = 0;
     int array[8];
     for (i = 0; i < PIXEL_SIZE; ++i){
@@ -96,3 +93,88 @@ uint8_t f_block(uint8_t * block, uint8_t pixel, int k){
     return result;
 }
 
+uint8_t calc_parity_bit(uint8_t x){
+    return ( (x>>7) ^ 
+             (x>>6) ^
+             (x>>5) ^
+             (x>>4) ^
+             (x>>3) ^
+             (x>>2) ^
+             (x>>1) ^
+             (x) ) & 1;
+}
+
+void generate_galois_inverse_table (uint8_t * array, int n) {
+    uint8_t aux = 0;
+    uint8_t i, j;
+    bool flag = false;
+
+    array[0] = NULL_INVERSE; // 0 does not have an inverse, it's a convention
+
+    for (i = 1; i != 0; i++) {
+        for(j = 1; j != 0 && !flag; j++) {
+            aux = prod(i, j);
+            if(aux == 1) {
+                array[i] = j;
+                flag = true;
+            }
+        }
+        flag = false; 
+    }
+}
+
+uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound, uint8_t * inv) {
+    uint8_t to_return = 1;
+
+    for (int q = 0; q < upper_bound; q++) {
+        if (q != i) {
+            to_return = prod(to_return, prod(x[q],inv[sum(x[i], x[q])]));
+        }
+    }
+
+    return to_return;
+}
+
+void swap_with_last(uint8_t * x, uint8_t * y, int i, int n) {
+    uint8_t aux_x, aux_y;
+    
+    aux_x = x[n-1];
+    aux_y = y[n-1];
+
+    x[n-1] = x[i];
+    y[n-1] = y[i];
+
+    x[i] = aux_x;
+    y[i] = aux_y; 
+}
+
+void galois_lagrange_interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k, uint8_t * inv) {
+    uint8_t curr = 0;
+    uint8_t y_p[k];
+    int i, r, new_upper_bound;
+
+    for (i = 0; i < k - 1; i++) {
+        if (x[i] == 0) {
+            swap_with_last(x, y, i, k);
+        }
+
+        y_p[i] = y[i];
+    }
+    y_p[k-1] = y[k-1];
+    
+    s[0] = curr;
+
+    for(r = 0; r<k; r++) {
+        new_upper_bound =  k - r;
+        curr = 0;
+
+        for(i = 0; i < new_upper_bound; i++) {
+            if (r > 0) {
+                y_p[i] = prod(sum(y_p[i],s[r-1]), inv[x[i]]);
+            }
+            curr = sum(curr, prod(y_p[i], sequential_interpolation_product(x, i, new_upper_bound, inv)));
+        }
+
+        s[r] = curr;
+    }
+}
