@@ -1,7 +1,7 @@
 #include "cript.h"
 
 void free_all_images() {
-    for (int i = -1; i < crypt_info.args.k; i++) {
+    for (int i = -1; i < crypt_info.n; i++) {
         free_image(i);
     }
 }
@@ -30,7 +30,6 @@ void free_image(int image_index) {
 int find_images_in_directory (char * path){
     DIR * dir;
     struct dirent * dirp;
-    int read_images = 0;
 
     if ((dir = opendir(path)) == NULL) {
         fprintf(stderr, "Error abriendo directorio: %s\n", path);
@@ -46,13 +45,15 @@ int find_images_in_directory (char * path){
 
     chdir(path);
 
-    while((dirp = readdir(dir))!=NULL && read_images < crypt_info.args.k) {
+    crypt_info.n = 0;
+
+    while((dirp = readdir(dir))!=NULL && crypt_info.n < MAX_SHADOWS) {
         if(dirp->d_type == 8) {
             if(crypt_info.args.verbose) {
                 printf("Analizando si el archivo \"%s\" es adecuado para ser una shadow\n", dirp->d_name);
             }
-            if (read_image(dirp->d_name, read_images) == EXIT_SUCCESS) {
-                read_images++;
+            if (read_image(dirp->d_name, crypt_info.n) == EXIT_SUCCESS) {
+                crypt_info.n++;
             };
         }
     }
@@ -60,7 +61,7 @@ int find_images_in_directory (char * path){
     chdir(cwd);
     closedir(dir);
 
-    if (read_images < crypt_info.args.k) {
+    if (crypt_info.n < crypt_info.args.k) {
         fprintf(stderr, "No hay suficientes shadows en el directorio dado\n");
         return EXIT_FAILURE;
     }

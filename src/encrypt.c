@@ -21,12 +21,13 @@ int encryption_distribute(){
     int height = crypt_info.secret.header.height_px;
     int width = crypt_info.secret.header.width_px;
     int k = crypt_info.args.k;
+    int n = crypt_info.n;
     
     int bcount = (height*width)/k;
         for(int i=0; i<bcount;i++){
             uint8_t * secret = crypt_info.secret.image_data+k*i;
-            uint8_t xs[k];
-         for(int j=0;j<k;j++){
+            uint8_t xs[n];
+         for(int j = 0; j < n ;j++){
              uint8_t aux[4];
              get_block_by_index(&crypt_info.shadows[j],i,aux);
              uint8_t block[k];
@@ -71,7 +72,7 @@ int output_distribute(){
     char new_file_name[length];
 
 
-    for (int i = 0; i < crypt_info.args.k; i++) {
+    for (int i = 0; i < crypt_info.n; i++) {
         image = &crypt_info.shadows[i];
         sprintf(new_file_name, "%s/%s", crypt_info.args.output, image->filename);
         write_image(new_file_name, image);

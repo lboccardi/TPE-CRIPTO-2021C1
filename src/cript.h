@@ -13,6 +13,7 @@
 #include <dirent.h>
 
 #define MAX_PATH_LENGHT 1024
+#define MAX_SHADOWS 100
 typedef enum operation {
     DISTRIBUTE,
     RECOVER
@@ -48,7 +49,8 @@ typedef struct crypt{
     args_info args;
     functions functions;
     secret_image secret;
-    bmp_image shadows[6];
+    bmp_image shadows[MAX_SHADOWS];
+    uint8_t n;         
 } crypt;
 
 #define ARGS_COUNT 5
