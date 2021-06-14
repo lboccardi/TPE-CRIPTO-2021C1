@@ -104,6 +104,27 @@ uint8_t calc_parity_bit(uint8_t x){
              (x) ) & 1;
 }
 
+void distribute_function_in_block(uint8_t * block, int k, uint8_t * ret) {
+    uint8_t f_x = f_block(block,ret[0],k);
+    uint8_t replacement;
+
+    ret[1]&=0xF8;
+    replacement = f_x & 0xE0;
+    replacement >>= 5;
+    ret[1]|=replacement;
+
+    ret[2]&=0xF8;
+    replacement = f_x & 0x1C;
+    replacement >>= 2;
+    ret[2]|=replacement;
+
+    ret[3]&=0xF8;
+    replacement = f_x & 0x03;
+    uint8_t parity= calc_parity_bit(f_x) <<2;
+    replacement|=parity;
+    ret[3]|=replacement;
+}
+
 void generate_galois_inverse_table (uint8_t * array, int n) {
     uint8_t aux = 0;
     uint8_t i, j;

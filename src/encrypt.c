@@ -26,39 +26,23 @@ int encryption_distribute(){
     int bcount = (height*width)/k;
         for(int i=0; i<bcount;i++){
             uint8_t * secret = crypt_info.secret.image_data+k*i;
-            uint8_t xs[n];
-         for(int j = 0; j < n ;j++){
+            uint8_t xs[n], block[k];
+            memcpy(block,secret,k*sizeof(uint8_t));
+
+         for(int j = 0; j < n ;j++) {
              uint8_t aux[4];
              get_block_by_index(&crypt_info.shadows[j],i,aux);
-             uint8_t block[k];
-             memcpy(block,secret,k*sizeof(uint8_t));
 
              for(int r=0;r<j;r++){
                  if(aux[0]==xs[r]){
                      aux[0]=(aux[0]+1)%255;
                      r=0;
                  }
-             }   
+             }
+
              xs[j]=aux[0];
-             
-             uint8_t f_x = f_block(block,aux[0],k);
-             uint8_t replacement;
 
-             aux[1]&=0xF8;
-             replacement = f_x & 0xE0;
-             replacement >>= 5;
-             aux[1]|=replacement;
-
-             aux[2]&=0xF8;
-             replacement = f_x & 0x1C;
-             replacement >>= 2;
-             aux[2]|=replacement;
-
-             aux[3]&=0xF8;
-             replacement = f_x & 0x03;
-             uint8_t parity= calc_parity_bit(f_x) <<2;
-             replacement|=parity;
-             aux[3]|=replacement;
+             distribute_function_in_block(block, k, aux);
              write_block_by_index(&crypt_info.shadows[j],i,aux);
          }   
         }    

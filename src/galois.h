@@ -14,5 +14,6 @@ uint8_t calc_parity_bit(uint8_t x);
 
 void generate_galois_inverse_table (uint8_t * array, int n);
 void galois_lagrange_interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k, uint8_t * inv);
+void distribute_function_in_block(uint8_t * block, int k, uint8_t * ret);
 
 #endif
