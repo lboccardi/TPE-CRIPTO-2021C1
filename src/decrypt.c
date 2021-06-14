@@ -40,7 +40,13 @@ int decryption_recover() {
 
             t |= (aux[3] & 0x03);
 
-            //uint8_t parity = (aux[3] & 0x04) >> 2;
+            uint8_t calc_parity= calc_parity_bit(t);
+            uint8_t parity = (aux[3] & 0x04) >> 2;
+            if(parity != calc_parity){
+                fprintf(stderr, "Error de paridad\n");
+                return EXIT_FAILURE;
+            }
+
             x[j] = aux[0];
             f_x[j] = t;
         }
