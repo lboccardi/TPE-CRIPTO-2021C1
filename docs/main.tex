@@ -99,7 +99,7 @@ Por último, existe un debate cuestionable entre comenzar a indexar con el núme
 
 %------------------------------------------------
 
-\subsubsection{Optimización de la carga útil}
+\subsection{Optimización de la carga útil}
 
 Cuando en el paper se refiere a la carga útil está hablando de cuánta información se guarda en cada sombra. Si asumimos que el bloque (4 píxeles = 4 bytes) es la menor unidad de información, entonces podemos establecer una comparación.
 
@@ -109,9 +109,20 @@ Es fácil notar que si $k = 4$, se utilizan $\frac{L}{k} * 4$ píxeles, que es e
 
 En el caso $k > 4$, se puede definir un factor de carga $f = \frac{4}{k}$ que define qué porcentaje de cada imagen se ocupa guardando el secreto. Para $k = 5, f = 0.8$, y para $k = 6, f = 0.67$.
 
-Puede verse que mientras mayor es $k$, se necesitan más portadoras pero el tamaño requerido de cada una para guardar el secreto es menor.
+No se menciona la optimización de la carga útil en ningún momento. Pero podemos suponer que tiene que ver con el tamaño de bloque escogido. En bloques de $2x2$ se utilizan los 3 bits menos significativos de 3 píxeles para guardar el valor de F. En bloques más grandes se alteran menos bits a cambio de una menor modificación en los datos de la shadow, con el inconveniente de que aumenta el tamaño mínimo requerido.  
+
+Puede verse que mientras mayor es $k$, se necesitan más portadoras pero el tamaño requerido de cada una para guardar el secreto es menor. Si consideramos que $L$ es, en bytes, la cantidad de datos "secretos", como mínimo para recuperarlos se necesita $4*L$. 
 
 %------------------------------------------------
+
+\subsection{Trabajar en GF($2^{8}$) en lugar de Operaciones Modulares}
+
+La principal ventaja que ofrece trabajar con campos de Galois GF($2^8$) es que no tiene problema para generar valores en el rango $[0,255]$, lo cual es fundamental para la recuperación de los datos. Es por esto que el algoritmo se puede aplicar para recuperar cualquier tipo de archivo binario, no solo imágenes, sin pérdida de información. Si trabajáramos con congruencias $Mod$ $251$ o $Mod$ $257$ que son los dos primos más cercanos al rango, es explícita la pérdida de datos.
+
+Las desventaja más importante tiene que ver con la dificultad de operar en los campos de Galois, lo cual aumenta la complejidad de las operaciones y hace mucho más difícil el debugging del código. Además, para operar en el campo se necesita conocer el polinomio generador correspondiente. Por ende, dos personas que operen con el mismo algoritmo pero empleen un polinomio distinto, van a obtener resultados inconclusos entre sí.
+
+%------------------------------------------------
+
 
 \subsubsection{Suppose ``chuck" implies vomiting.}
 
@@ -222,35 +233,5 @@ Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et 
 \subsection{The table above shows the nutritional consistencies of two sausage types. Explain their relative differences given what you know about daily adult nutritional recommendations.}
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit.
-
-%----------------------------------------------------------------------------------------
-%	CODE LISTING EXAMPLE
-%----------------------------------------------------------------------------------------
-
-\section{Reading a Code Listing}
-
-\lstinputlisting[
-	caption=Luftballons Perl Script., % Caption above the listing
-	label=lst:luftballons, % Label for referencing this listing
-	language=Perl, % Use Perl functions/syntax highlighting
-	frame=single, % Frame around the code listing
-	showstringspaces=false, % Don't put marks in string spaces
-	numbers=left, % Line numbers on left
-	numberstyle=\tiny, % Line numbers styling
-	]{luftballons.pl}
-
-%------------------------------------------------
-
-\subsection{How many luftballons will be output by the Listing \ref{lst:luftballons} above?}
-
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor.
-
-%------------------------------------------------
-
-\subsection{Identify the regular expression in Listing \ref{lst:luftballons} and explain how it relates to the anti-war sentiments found in the rest of the script.}
-
-Fusce varius orci ac magna dapibus porttitor. In tempor leo a neque bibendum sollicitudin. Nulla pretium fermentum nisi, eget sodales magna facilisis eu. Praesent aliquet nulla ut bibendum lacinia. Donec vel mauris vulputate, commodo ligula ut, egestas orci. Suspendisse commodo odio sed hendrerit lobortis. Donec finibus eros erat, vel ornare enim mattis et.
-
-%----------------------------------------------------------------------------------------
 
 \end{document}
