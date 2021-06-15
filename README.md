@@ -41,7 +41,7 @@ El programa se puede correr en dos modos, el primero correspondiente a la distri
 
 - ```"dir/"``` - Directorio donde se encuentran las imágenes. Si se elige distribución, debe ser un directorio con al menos k imágenes de formato BMP y que coincidan con el tamaño de la imagen secreta. Si se elige recuperación, debe contener como mínimo k imágenes que porten un secreto distribuido previamente.
 
-#### Quinto parámetro:
+#### Quinto parámetro (Opcional):
 
 - ```"--verbose"``` - Imprime información adicional durante la ejecución del programa. Brinda datos sobre las imágenes leídas así como los formatos.
 
