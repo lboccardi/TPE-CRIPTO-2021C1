@@ -122,6 +122,29 @@ La principal ventaja que ofrece trabajar con campos de Galois GF($2^8$) es que n
 Las desventaja más importante tiene que ver con la dificultad de operar en los campos de Galois, lo cual aumenta la complejidad de las operaciones y hace mucho más difícil el debugging del código. Además, para operar en el campo se necesita conocer el polinomio generador correspondiente. Por ende, dos personas que operen con el mismo algoritmo pero empleen un polinomio distinto, van a obtener resultados inconclusos entre sí.
 
 %------------------------------------------------
+\subsection{8. ¿se podrían tomar los bloques de otra manera, en lugar de como matrices 2x2? Explicar.}
+
+Si, se podrían tomar bloques con otras dimensiones siempre teniendo en cuenta que la cantidad de bloques totales no puede ser menor a la cantidad de bloques en los que se divide nuestra imagen secreta puesto que si no quedaría una parte de nuestra imagen sin distribuir. 
+
+Por ejemplo podrían tomarse en las shadows matrices de 3x3 o 2x4, o incluso 1x4 que si bien alteraría la misma cantidad de píxeles tendría otra distribución en el espacio. 
+
+Lo que se va a ver afectado al modificar la forma de seleccionar los bloques es el ruido que existira una vez ejecutado el algoritmo en las imagenes portadoras. Esto se debe a que, a mayor tamaño de matriz menos bits de cada pixel son tocados, generando menos alteraciones visibles a simple viste.
+%------------------------------------------------
+\subsection{9. Discutir los siguientes aspectos relativos al algoritmo implementado:}
+	\subsection{a. Facilidad de implementación}
+
+La dificultad de la implementación radicaba en el real entendimiento del algoritmo. Una vez comprendido como funcionaba el mismo su desarrollo era relativamente simple. No existieron funciones complejas ni operaciones que causaran demasiado trabajo a la hora de implementarlo.
+
+	\subsection{b. Posibilidad de extender el algoritmo o modificarlo.}
+	
+Modificar el algoritmo en sí parece tener una dificultad baja, puesto que no es complejo ni extremadamente largo. De todas formas se debería considerar que la dificultad de esta extensión/modificación esta completamente atada a el proposito del cambio. Por ejemplo, si deseamos modificar el orden en que se guarda el secreto en las shadows este cambio no llevaría a propositos de implementación más que un par de lineas. 
+
+%------------------------------------------------
+\subsection{10. ¿En qué situaciones aplicarían este tipo de algoritmos?}
+
+Consideramos que el algoritmo en sí presenta un método de encripción muy interesante y efectivo, por lo que en situaciones donde la seguridad no sea estrictamente necesaria o este garantizada por otro lado sería muy positivo utilizarlo. Por ejemplo, en caso de tener que esconder un código QR o una contraseña en formato de imagen la idea de distribuila en otras para pasarla desapercibida parece extremadamente útil.
+
+%------------------------------------------------
 
 
 \subsubsection{Suppose ``chuck" implies vomiting.}
