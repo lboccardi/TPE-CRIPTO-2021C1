@@ -89,6 +89,62 @@ El archivo asignado al grupo consistía de 4 imágenes BMP. Se recuperó el secr
 %	TEXT EXAMPLE
 %----------------------------------------------------------------------------------------
 
+\section{Decisiones de implementación}
+
+\subsection{Manejo de imágenes BMP}
+
+\subsubsection{Distribución}
+
+Cuando se corre el programa en modo distrbución, se implementa un límite de $N = 100$ shadows, que es la cantidad de espacio reservado para cada estructura correspondiente a las shadows que se mantiene en memoria. Todas las imágenes primero se leen, luego se cargan a memoria, se procesan y se sobreescriben las imágenes correspondientes.
+
+En cuanto al almacenamiento, en la consigna se había recomendado procesar las imágenes de la siguiente manera (consideremos un esquema simple, de $4x4$):
+
+$$
+\begin{bmatrix}
+12 & 13 & 14 & 15 \\
+8 & 9 & 10 & 11 \\
+4 & 5 & 6 & 7 \\
+0 & 1 & 2 & 3
+\end{bmatrix}
+$$
+
+No obstante, se decidió por facilidad de implementación guardar los bytes en el orden que se leen y accederlos de manera inversa:
+
+$$
+\begin{bmatrix}
+0 & 1 & 2 & 3 \\
+4 & 5 & 6 & 7 \\
+8 & 9 & 10 & 11 \\
+12 & 13 & 14 & 15
+\end{bmatrix}
+$$
+
+Esto altera la forma de obtener los floques, pero es transparente para la implementación porque se implementaron métodos que abstraen esa lógica, devolviendo el bloque correspondiente al subíndice que se requiera.
+
+Cuando más de un valor de X se repite, se va sumando 1 operando en $Mod$ $256$ para evitar que hayan valores repetidos entre las shadows. Cuando se excede de 255 se vuelve al número 0, en lugar de restar desde el mayor número. Esto es netamente una decisión de implementación contra un tradeoff de "ruido" en las portadoras.
+
+\subsubsection{Recuperación}
+
+Para la recuperación, la forma de lectura es similar a la implementada en la distribución. Se toman exactamente $k$ imágenes del directorio, la cual no es aleatoria, sino son las primeras $k$ que resultan del recorrido.
+
+En lo que corresponde al procesamiento, ante cualquier error en el bit de paridad se termina la ejecución del programa con el código y el mensaje de error correspondientes.
+
+La consideración respecto a la recuperación es que la imagen secreta toma el header correspondiente a la primer sombra que fue leída, y guarda el secreto recuperado con el nombre que fue pasado como argumento para el programa. En el caso de que ya exista un archivo previamente creado con el mismo nombre y en el mismo path, se sobreescribe.
+
+\subsection{Interpolación}
+
+Para la interpolación es necesario realizar el cálculo de los inversos multiplicativos. Esto se puede hacer programáticamente o de manera estática (considerando que el polinomio generador se mantiene constante. En este caso decidimos mantener el cálculo realizado en tiempo de ejecución. Se asignó un valor para el inverso multiplicativo de 0, esto NO IMPLICA que dicho número posea un inverso multiplicativo. Es solo por comodidad en el acceso a los valores indexados en el array.
+
+\subsection{Información extraordinaria}
+
+Se añadió un parámetro de $--verbose$, su objetivo es brindar un poco más de información sobre lo realizado por el procesamiento. Es totalmente opcional y su uso fue netamente por motivos de análisis y verificación durante la etapa de resolución del problema.
+
+
+
+%----------------------------------------------------------------------------------------
+%	TEXT EXAMPLE
+%----------------------------------------------------------------------------------------
+
 \section{Cuestiones a Analizar}
 
 \subsection{Discutir los siguientes aspectos relativos al documento}
