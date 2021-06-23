@@ -28,6 +28,10 @@
 %----------------------------------------------------------------------------------------
 
 \title{	
+	\begin{center}
+		\includegraphics[scale=0.4]{itba-logo}
+	\end{center}
+	\vspace{25pt} % Whitespace
 	\normalfont\normalsize
 	\textsc{Instituto Tecnológico de Buenos Aires}\\ % Your university, school and/or department name(s)
 	\vspace{25pt} % Whitespace
@@ -126,6 +130,36 @@ Puede verse que mientras mayor es $k$, se necesitan más portadoras pero el tama
 La principal ventaja que ofrece trabajar con campos de Galois GF($2^8$) es que no tiene problema para generar valores en el rango $[0,255]$, lo cual es fundamental para la recuperación de los datos. Es por esto que el algoritmo se puede aplicar para recuperar cualquier tipo de archivo binario, no solo imágenes, sin pérdida de información. Si trabajáramos con congruencias $Mod$ $251$ o $Mod$ $257$ que son los dos primos más cercanos al rango, es explícita la pérdida de datos.
 
 Las desventaja más importante tiene que ver con la dificultad de operar en los campos de Galois, lo cual aumenta la complejidad de las operaciones y hace mucho más difícil el debugging del código. Además, para operar en el campo se necesita conocer el polinomio generador correspondiente. Por ende, dos personas que operen con el mismo algoritmo pero empleen un polinomio distinto, van a obtener resultados inconclusos entre sí.
+
+%------------------------------------------------
+
+\subsection{¿Se puede trabajar con otro polinomio generador? ¿Podría guardarse como “clave”?}
+
+/* Escribir acá la respuesta */
+
+%------------------------------------------------
+
+\subsection{Según el documento se pueden guardar secretos de todo tipo (imágenes, pdf, ejecutables). ¿Por qué? (Relacionarlo con la pregunta 3)}
+
+En el algoritmo se toma una cierta cantidad de bytes como input, se obtiene la función correspondiente para realizar la descomposición en pares $(X, F(X))$. En este caso por un tema correspondiente al tipo de imágenes y el tamaño, se decidió arbitrariamente que el ocultamiento se realice únicamente sobre la sección de los datos de la imagen secreta correspondiente a la matriz de píxeles.
+
+Si en lugar de ocultar solo esa parte, se decide ocultar todo el archivo (Desde el byte $0$ hasta el byte $n$), se podrían ocultar todo tipo de archivos, con la condición de que el esquema y el tamaño de las shadows sea el adecuado. Esto se debe a que, a fin de cuentas, los archivos terminan siendo una sucesión de bytes.
+
+Al extender el algoritmo, tomar una imagen, un archivo PDF o un binario de un programa compilado en C terminaría siendo lo mismo a efectos del algoritmo.
+
+En relación a la pregunta 3, el campo de Galois permite generar valores en el intervalo $[0, 255]$ sin problemas. Esto previene una pérdida de datos que podría ocurrir al trabajar con $Mod$ $251$, por ejemplo, donde ya mencionamos que hay una pérdida efectiva debido a la naturaleza de la operación. En las imágenes utilizar la operación de módulo no representa un gran impacto porque la pérdida de valores no altera la naturaleza del secreto (el color resulta similar), pero esta operación en otro tipo de archivo puede alterarlo o corromperlo.
+
+%------------------------------------------------
+
+\subsection{¿Cómo podría adaptarse la implementación realizada para poder guardar un archivo de imagen completo? (Es decir, guardando encabezado y pixeles)}
+
+/* Escribir acá la respuesta */
+
+%------------------------------------------------
+
+\subsection{Analizar cómo resultaría el algoritmo si se usaran imágenes en color (24 bits por píxel)}
+
+/* Escribir acá la respuesta */
 
 %------------------------------------------------
 \subsection{¿Se podrían tomar los bloques de otra manera, en lugar de como matrices $2x2$? Explicar}
