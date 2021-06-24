@@ -3,7 +3,7 @@
 uint16_t multiplication(uint8_t a, uint8_t b);
 uint8_t redux(uint16_t a, uint16_t b);
 void swap_with_last(uint8_t * x, uint8_t * y, int i, int n);
-uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound, uint8_t * inv);
+uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound);
 
 uint8_t sum(uint8_t a, uint8_t b){
     return a ^ b;
@@ -144,12 +144,12 @@ void generate_galois_inverse_table (uint8_t * array, int n) {
     }
 }
 
-uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound, uint8_t * inv) {
+uint8_t sequential_interpolation_product(uint8_t * x, int i, int upper_bound) {
     uint8_t to_return = 1;
 
     for (int q = 0; q < upper_bound; q++) {
         if (q != i) {
-            to_return = prod(to_return, prod(x[q],inv[sum(x[i], x[q])]));
+            to_return = prod(to_return, prod(x[q],galois_inverse_table[sum(x[i], x[q])]));
         }
     }
 
@@ -169,7 +169,7 @@ void swap_with_last(uint8_t * x, uint8_t * y, int i, int n) {
     y[i] = aux_y; 
 }
 
-void galois_lagrange_interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k, uint8_t * inv) {
+void galois_lagrange_interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k) {
     uint8_t curr = 0;
     uint8_t y_p[k];
     int i, r, new_upper_bound;
@@ -191,9 +191,9 @@ void galois_lagrange_interpolation(uint8_t * x, uint8_t * y, uint8_t * s,int k, 
 
         for(i = 0; i < new_upper_bound; i++) {
             if (r > 0) {
-                y_p[i] = prod(sum(y_p[i],s[r-1]), inv[x[i]]);
+                y_p[i] = prod(sum(y_p[i],s[r-1]), galois_inverse_table[x[i]]);
             }
-            curr = sum(curr, prod(y_p[i], sequential_interpolation_product(x, i, new_upper_bound, inv)));
+            curr = sum(curr, prod(y_p[i], sequential_interpolation_product(x, i, new_upper_bound )));
         }
 
         s[r] = curr;

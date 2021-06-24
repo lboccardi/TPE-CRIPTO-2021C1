@@ -21,9 +21,7 @@ int decryption_recover() {
     int height = crypt_info.shadows[0].header.height_px;
     int width = crypt_info.shadows[0].header.width_px;
     int k = crypt_info.args.k;
-    uint8_t inv_prod[256];
-    generate_galois_inverse_table(inv_prod,256);
-
+    
     int bcount = (height * width) / k;
     for (int i = 0; i < bcount; i++) {
         uint8_t x[k];
@@ -51,7 +49,7 @@ int decryption_recover() {
             f_x[j] = t;
         }
         uint8_t secret[k];
-        galois_lagrange_interpolation(x,f_x,secret,k,inv_prod);
+        galois_lagrange_interpolation(x,f_x,secret,k);
         memcpy(crypt_info.secret.image_data+i*k,secret,k*sizeof(uint8_t));
     }
 
