@@ -16,7 +16,7 @@ Desde el directorio root correspondiente al proyecto ejecutar el comando.
 make
 ```
 
-Se generará el programa correspondiente con el nombre ```main```.
+Se generará el programa correspondiente con el nombre ```ss```.
 
 En caso de desear compilarlo sin utilizar Makefile, tener en cuenta la inclusión de las librerías correspondientes.
 
@@ -50,7 +50,7 @@ El programa se puede correr en dos modos, el primero correspondiente a la distri
 #### Distribución
 
 ```bash
-./main d Albert.bmp 4 images/
+./ss d Albert.bmp 4 images/
 ```
 
 Se distribuye el archivo ```Albert.bmp``` es un esquema (4, n), donde n es la cantidad de imágenes BMP contenidas en el directorio ```images/```.
@@ -58,7 +58,7 @@ Se distribuye el archivo ```Albert.bmp``` es un esquema (4, n), donde n es la ca
 #### Recuperación
 
 ```bash
-./main r Secreto.bmp 4 images/
+./ss r Secreto.bmp 4 images/
 ```
 
 Se recupera el secreto y se guarda en un archivo ```Secreto.bmp``` mediante un esquema (4, n), tomando 4 imágenes del directorio ```images/```.
