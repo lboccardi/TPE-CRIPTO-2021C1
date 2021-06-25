@@ -95,7 +95,7 @@ El archivo asignado al grupo consistía de 4 imágenes BMP. Se recuperó el secr
 
 \subsubsection{Distribución}
 
-Cuando se corre el programa en modo distrbución, se implementa un límite de $N = 100$ shadows, que es la cantidad de espacio reservado para cada estructura correspondiente a las shadows que se mantiene en memoria. Todas las imágenes primero se leen, luego se cargan a memoria, se procesan y se sobreescriben las imágenes correspondientes.
+Cuando se corre el programa en modo distribución, se implementa un límite de $N = 100$ shadows, que es la cantidad de espacio reservado para cada estructura correspondiente a las shadows que se mantiene en memoria. Todas las imágenes primero se leen, luego se cargan a memoria, se procesan y se sobreescriben las imágenes correspondientes.
 
 En cuanto al almacenamiento, en la consigna se había recomendado procesar las imágenes de la siguiente manera (consideremos un esquema simple, de $4x4$):
 
@@ -121,7 +121,7 @@ $$
 
 Esto altera la forma de obtener los bloques, pero es transparente para la implementación porque se implementaron métodos que abstraen esa lógica, devolviendo el bloque correspondiente al subíndice que se requiera.
 
-Cuando más de un valor de X se repite, se va sumando 1 operando en $Mod$ $256$ para evitar que hayan valores repetidos entre las shadows. Cuando se excede de 255 se vuelve al número 0, en lugar de restar desde el mayor número. Esto es netamente una decisión de implementación contra un tradeoff de "ruido" en las portadoras.
+Cuando más de un valor de X se repite, se va sumando 1 operando en $Mod$ $256$ para evitar que hayan valores repetidos entre las shadows. Cuando se excede de 255 se vuelve al número 0, en lugar de restar desde el mayor número. Esto es netamente una decisión de implementación contra un tradeoff de ''ruido'' en las portadoras.
 
 \subsubsection{Recuperación}
 
@@ -133,7 +133,7 @@ La consideración respecto a la recuperación es que la imagen secreta toma el h
 
 \subsection{Interpolación}
 
-Para la interpolación es necesario realizar el cálculo de los inversos multiplicativos. Esto se puede hacer programáticamente o de manera estática (considerando que el polinomio generador se mantiene constante. En este caso decidimos mantener el cálculo realizado en tiempo de ejecución. Se asignó un valor para el inverso multiplicativo de 0, esto NO IMPLICA que dicho número posea un inverso multiplicativo. Es solo por comodidad en el acceso a los valores indexados en el array.
+Para la interpolación es necesario realizar el cálculo de los inversos multiplicativos. Esto se puede hacer programáticamente o de manera estática (considerando que el polinomio generador se mantiene constante. En este caso decidimos mantener el cálculo estático. Se asignó un valor para el inverso multiplicativo de 0, esto NO IMPLICA que dicho número posea un inverso multiplicativo. Es solo por comodidad en el acceso a los valores indexados en el array.
 
 \subsection{Información extraordinaria}
 
@@ -155,7 +155,7 @@ El paper analizado tiene una estructura muy bien organizada. Primero se realiza 
 
 \subsubsection{La descripción del algoritmo de distribución y la del algoritmo de recuperación}
 
-En cuanto a la descripción de los algoritmos, si bien es sumamente clara, se encontraron algunos problemas en las fórmulas. Muchos de los signos '-' no aparecen, e incluso en la fórmula 7 está mal detallada ya que refiere a $s_{0}$ y no a $s_{r-1}$ como debería. No obstante, al ser fórmulas correspondientes a un método de interpolación ampliamente conocido, no hubieron mayores inconvenientes. El resto del detalle es detallado y completo, con un grado de detalle adecuado para poder ser comprendido por personas con una formación correspondiente.
+En cuanto a la descripción de los algoritmos, si bien es sumamente clara, se encontraron algunos problemas en las fórmulas. Muchos de los signos '-' no aparecen, e incluso en la fórmula 7 está mal detallada ya que refiere a $s_{0}$ y no a $s_{r-1}$ como debería. No obstante, al ser fórmulas correspondientes a un método de interpolación ampliamente conocido, no hubieron mayores inconvenientes. También, la fórmula correspondiente al $Payload$ no tiene a $k$ como variable sino que utiliza el número $4$, pero por el contexto se entiende. El resto es detallado y completo, con un grado de detalle adecuado para poder ser comprendido por personas con una formación correspondiente.
 
 \subsubsection{La notación utilizada}
 
@@ -194,9 +194,9 @@ Las desventaja más importante tiene que ver con la dificultad de operar en los 
 Es posible trabajar con otro polinomio generador. En el paper utilizado para basar este trabajo, para los resultados experimentales, se utilizó como polinomio primitivo el polinomio 
 $g(x) = x^8 + x^4 + x^3 + x + 1$ que equivale al número 283, el cual es distinto al utlizado en este trabajo. Lo único importante es considerar que debe ser de orden 8 y mayor a 255.
 
-La idea es utilizar el mismo polinomio generador, que se encuentre dentro de $GF(2^8)$, para la encriptación y desencripción de la imagen. Cuando hay más de un polinomio en el algoritmo es necesario saber de antemano cuál es.
+La idea es utilizar el mismo polinomio generador, que se encuentre dentro de $GF(2^8)$, para la encripción y desencripción de la imagen. Cuando hay más de un polinomio en el algoritmo es necesario saber de antemano cuál es.
 
-Para almacenarlo en las shadows, se podría (por ejemplo) guardar el número correspondiente al polinomio algún campo reservado del header. Además, podría almacenarse de igual manera el k, para saber con qué esquema se distribuyó.
+Para poder encriptar y desencriptar, es necesario saber de antemano el polinomio generador y el $k$ (cantidad mínima de sombras). Entonces, se podría tomar como ''clave'' algún tipo de combinación entre estos datos. Es decir, el polinomio puede ser parte de una ''clave'' pero también se debería incluir el $k$.
 
 %------------------------------------------------
 
@@ -214,14 +214,14 @@ En relación a la pregunta 3, el campo de Galois permite generar valores en el i
 
 \subsection{¿Cómo podría adaptarse la implementación realizada para poder guardar un archivo de imagen completo? (Es decir, guardando encabezado y pixeles)}
 
-Al utilizar operaciones en $GF(2^8)$, se garantiza una recuperación sin pérdida de los datos secretos. Esto permite que los datos secretos puedan ser cualquier tipo de dato digital. Para que la implementación realizada pueda guardar el archivo de la imagen completo, lo único que bastaría cambiar sería:
+Para que la implementación realizada pueda guardar el archivo de la imagen completo, lo único que bastaría cambiar sería:
 
 \begin{itemize}
-  \item Pasar por el proceso de encriptación y desencriptación el archivo completo, no solo los píxeles de la imagen
-  \item Cuando se desencripta, no adjuntarle el encabezado de una imagen camuflaje como se hace actualmente
+  \item Pasar por el proceso de encripción y desencripción el archivo completo, no solo los píxeles de la imagen.
+  \item Cuando se desencripta, no adjuntarle el encabezado de una imagen camuflaje como se hace actualmente.
 \end{itemize}
 
-De igual manera, hay que considerar que el tamaño de las shadows debe ser adecuado como para soportar la carga de dichos datos. No se podrían usar shadows del mismo tamaño que la imagen secreta porque quedarían $Offset(Secret)$.
+De igual manera, hay que considerar que el tamaño de las shadows debe ser adecuado como para soportar la carga de dichos datos.
 
 %------------------------------------------------
 
@@ -231,16 +231,16 @@ En el caso que se desee utilizar imágenes a color como imágenes camuflaje, se 
 
 Cuando se toma el $X$ para calcular el $F(X)$, se tomará solo el primer byte del píxel. Luego, se esconderá $F(X)$ en los últimos 3 bits del tercer byte de los píxeles $W$, $Y$, $Z$. Solo se alteran 3 bits de 24 en los píxeles $W$, $Y$, $Z$.
 
-Por otro lado, cuando se utilizan imágenes en escala de grises, se terminan alterando 3 bits de 5 en los píxeles $W$, $Y$, $Z$. Como el porcentaje de bits alterados por píxel es menor, las imágenes camuflaje con el secreto ya escondido tienen mejor definición que las imágenes a escala de grises.
+Por otro lado, cuando se utilizan imágenes en escala de grises, se terminan alterando 3 bits de 8 en los píxeles $W$, $Y$, $Z$. Como el porcentaje de bits alterados por píxel es menor, las imágenes camuflaje con el secreto ya escondido tienen mejor definición que las imágenes a escala de grises.
 
 %------------------------------------------------
 \subsection{¿Se podrían tomar los bloques de otra manera, en lugar de como matrices $2x2$? Explicar}
 
-Si, se podrían tomar bloques con otras dimensiones siempre teniendo en cuenta que la cantidad de bloques totales no puede ser menor a la cantidad de bloques en los que se divide nuestra imagen secreta puesto que si no quedaría una parte de la imagen sin distribuir. 
+Si, se podrían tomar bloques con otras dimensiones siempre teniendo en cuenta que la cantidad de bloques totales no puede ser menor a la cantidad de bloques en los que se divide nuestra imagen secreta puesto que de otra quedaría una parte del secreto sin distribuir. 
 
 Por ejemplo podrían tomarse en las shadows matrices de $3x3$, $2x4$ o incluso $1x4$. En el último caso sería análogo a $2x2$ pero con una distribución espacial distinta.
 
-Lo que se va a ver afectado al modificar la forma de seleccionar los bloques es el ruido que existirá una vez ejecutado el algoritmo en las imágenes portadoras. Si se toman bloques de tamaño menos a $2x2$, hay más ruido. Si, por el contrario, se toman bloques más grandes, se alteran más píxeles pero menos bits de cada uno, lo que genera menos alteraciones visuales.
+Lo que se va a ver afectado al modificar la forma de seleccionar los bloques es el ruido que existirá una vez ejecutado el algoritmo en las imágenes portadoras. Si se toman bloques de tamaño menor a $2x2$, hay más ruido. Si, por el contrario, se toman bloques más grandes, se alteran más píxeles pero menos bits de cada uno, lo que genera menos alteraciones visuales.
 
 %------------------------------------------------
 \subsection{Discutir los siguientes aspectos relativos al algoritmo implementado}
@@ -263,9 +263,9 @@ Finalmente, una idea que se nos ocurrió es llevar el algoritmo a una implementa
 %------------------------------------------------
 \subsection{¿En qué situaciones aplicarían este tipo de algoritmos?}
 
-Este tipo de algoritmos es especialmente bueno cuando la distribución del secreto se tiene que hacer con una determinada cantidad de partes, y se requiere que al menos un subconjunto de ellas se "reúna" para poder recuperar el contenido.
+Este tipo de algoritmos es especialmente bueno cuando la distribución del secreto se tiene que hacer con una determinada cantidad de partes, y se requiere que al menos un subconjunto de ellas se ''reúna'' para poder recuperar el contenido.
 
-Un ejemplo de esto sería, por ejemplo, una clave de alta seguridad en una empresa o agencia gubernamental. Supongamos que ante una emergencia se debe recuperar dicha clave que fue repartida entre N personas de alta jerarquía, y se establece que se requieren como mínimo K autoricen el procedimiento. Esto evita, de manera primaria, problemas de exceso de autoridad.
+Un ejemplo de esto sería, por ejemplo, una clave de alta seguridad en una empresa o agencia gubernamental. Supongamos que ante una emergencia se debe recuperar dicha clave que fue repartida entre N personas de alta jerarquía, y se establece que se requieren como mínimo K para que se autorice el procedimiento. Esto evita, de manera primaria, problemas de exceso de autoridad.
 
 Otra opción interesante podría ser el traslado de la información por un canal inseguro. Imaginemos que se quiere enviar un archivo binario con información de índole sensible. Utilizar uno de estos esquemas permite, por ejemplo, reducir el potencial riesgo de exponer esta información, siempre y cuando el atacante desconozca que se está empleando el algoritmo. En caso de que el atacante pueda conocerlo, se debe procurar jamás enviar K partes por el mismo medio. Una opción sería enviar K-1 por el medio inseguro, y una de las restantes de manera física (Memoria USB, por ejemplo).
 
